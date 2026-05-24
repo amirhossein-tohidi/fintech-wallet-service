@@ -8,19 +8,21 @@ public static class EndpointResultExtensions
 {
     public static RouteHandlerBuilder RequireIdempotencyKey(this RouteHandlerBuilder builder)
     {
-        return builder.AddEndpointFilter(async (context, next) =>
-        {
-            var httpContext = context.HttpContext;
-            if (!httpContext.Request.Headers.TryGetValue(HeaderNames.IdempotencyKey, out var idempotencyKeyHeader) ||
-                string.IsNullOrWhiteSpace(idempotencyKeyHeader.ToString()))
+        return builder
+            .AddEndpointFilter(async (context, next) =>
             {
-                return Results.BadRequest(ApiErrorResponse.From(ApiErrorCode.CommonIdempotencyKeyRequired));
-            }
+                var httpContext = context.HttpContext;
+                if (!httpContext.Request.Headers.TryGetValue(HeaderNames.IdempotencyKey, out var idempotencyKeyHeader) ||
+                    string.IsNullOrWhiteSpace(idempotencyKeyHeader.ToString()))
+                {
+                    return Results.BadRequest(ApiErrorResponse.From(ApiErrorCode.CommonIdempotencyKeyRequired));
+                }
 
-            httpContext.Items[HttpContextItemKeys.IdempotencyKey] = idempotencyKeyHeader.ToString();
+                httpContext.Items[HttpContextItemKeys.IdempotencyKey] = idempotencyKeyHeader.ToString();
 
-            return await next(context);
-        });
+                return await next(context);
+            })
+            .WithMetadata(RequireIdempotencyKeyMetadata.Instance);
     }
 
     public static string GetIdempotencyKey(this HttpContext context)

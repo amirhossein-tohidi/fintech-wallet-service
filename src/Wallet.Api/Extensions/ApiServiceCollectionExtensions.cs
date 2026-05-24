@@ -1,4 +1,5 @@
 using Wallet.Api.Common;
+using Wallet.Api.OpenApi;
 using Wallet.Application.Abstractions;
 using Wallet.Application.Common;
 
@@ -9,7 +10,8 @@ public static class ApiServiceCollectionExtensions
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddOpenApi();
+        services.AddOpenApi(options =>
+            options.AddOperationTransformer<IdempotencyKeyHeaderOperationTransformer>());
 
         services.AddHttpContextAccessor();
         services.AddScoped<IRouteInfo, HttpContextRouteInfo>();
