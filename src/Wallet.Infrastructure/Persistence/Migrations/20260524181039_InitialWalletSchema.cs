@@ -39,10 +39,17 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    EventType = table.Column<int>(type: "int", nullable: false),
                     OccurredOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReceivedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastAttemptedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ProcessedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeadLetteredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LockedUntil = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LockedBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    RetryCount = table.Column<int>(type: "int", nullable: false),
+                    DeadLetterRetryCount = table.Column<int>(type: "int", nullable: false),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Error = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -55,14 +62,17 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    EventType = table.Column<int>(type: "int", nullable: false),
                     Payload = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OccurredOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastAttemptedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ProcessedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeadLetteredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LockedUntil = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LockedBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     RetryCount = table.Column<int>(type: "int", nullable: false),
+                    DeadLetterRetryCount = table.Column<int>(type: "int", nullable: false),
                     Error = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -94,6 +104,7 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false),
                     WalletId = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
+                    ServiceType = table.Column<int>(type: "int", nullable: false),
                     IdempotencyKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
                     ReferenceId = table.Column<long>(type: "bigint", nullable: true),
@@ -112,27 +123,27 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PromoGrant",
+                name: "PromoGrants",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     WalletId = table.Column<long>(type: "bigint", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RemainingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ServiceType = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
+                    RemainingAmount = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserWalletId = table.Column<long>(type: "bigint", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2(3)", precision: 3, nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2(3)", precision: 3, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PromoGrant", x => x.Id);
+                    table.PrimaryKey("PK_PromoGrants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PromoGrant_UserWallets_UserWalletId",
-                        column: x => x.UserWalletId,
+                        name: "FK_PromoGrants_WalletId",
+                        column: x => x.WalletId,
                         principalTable: "UserWallets",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -141,6 +152,7 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false),
                     WalletId = table.Column<long>(type: "bigint", nullable: false),
+                    ServiceType = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
                     ExpireAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -188,9 +200,19 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_InboxMessages_DeadLetter",
+                table: "InboxMessages",
+                columns: new[] { "DeadLetteredAt", "LockedUntil", "LastAttemptedAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InboxMessages_EventType_Processing",
+                table: "InboxMessages",
+                columns: new[] { "EventType", "ProcessedAt", "DeadLetteredAt", "ReceivedAt" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InboxMessages_Processing",
                 table: "InboxMessages",
-                columns: new[] { "ProcessedAt", "ReceivedAt" });
+                columns: new[] { "ProcessedAt", "LockedUntil", "ReceivedAt" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LedgerEntries_TransactionId",
@@ -198,9 +220,9 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 column: "TransactionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LedgerTransactions_WalletId",
+                name: "IX_LedgerTransactions_WalletId_ServiceType_CreatedAt",
                 table: "LedgerTransactions",
-                column: "WalletId");
+                columns: new[] { "WalletId", "ServiceType", "CreatedAt" });
 
             migrationBuilder.CreateIndex(
                 name: "UIX_LedgerTransactions_IdempotencyKey",
@@ -209,24 +231,35 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_OutboxMessages_DeadLetter",
+                table: "OutboxMessages",
+                columns: new[] { "DeadLetteredAt", "LockedUntil", "LastAttemptedAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OutboxMessages_EventType_Processing",
+                table: "OutboxMessages",
+                columns: new[] { "EventType", "ProcessedAt", "DeadLetteredAt", "CreatedAt" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_Processing",
                 table: "OutboxMessages",
                 columns: new[] { "ProcessedAt", "LockedUntil", "CreatedAt" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PromoGrant_UserWalletId",
-                table: "PromoGrant",
-                column: "UserWalletId");
+                name: "IX_PromoGrants_WalletId_ServiceType_ExpiresAt",
+                table: "PromoGrants",
+                columns: new[] { "WalletId", "ServiceType", "ExpiresAt" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_WalletId_Status",
+                name: "IX_Reservations_WalletId_ServiceType_Status",
                 table: "Reservations",
-                columns: new[] { "WalletId", "Status" });
+                columns: new[] { "WalletId", "ServiceType", "Status" });
 
             migrationBuilder.CreateIndex(
                 name: "UIX_UserWallets_UserId",
                 table: "UserWallets",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -245,7 +278,7 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                 name: "OutboxMessages");
 
             migrationBuilder.DropTable(
-                name: "PromoGrant");
+                name: "PromoGrants");
 
             migrationBuilder.DropTable(
                 name: "Reservations");

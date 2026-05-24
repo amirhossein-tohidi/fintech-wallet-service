@@ -12,8 +12,8 @@ using Wallet.Infrastructure.Persistence;
 namespace Wallet.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WalletDbContext))]
-    [Migration("20260524145655_AddUniqueUserWalletUserId")]
-    partial class AddUniqueUserWalletUserId
+    [Migration("20260524181039_InitialWalletSchema")]
+    partial class InitialWalletSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -290,11 +290,34 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("DeadLetterRetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeadLetteredAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Error")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastAttemptedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LockedBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("LockedUntil")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("OccurredOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ProcessedAt")
                         .HasColumnType("datetime2");
@@ -302,15 +325,19 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("ReceivedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProcessedAt", "ReceivedAt")
+                    b.HasIndex("DeadLetteredAt", "LockedUntil", "LastAttemptedAt")
+                        .HasDatabaseName("IX_InboxMessages_DeadLetter");
+
+                    b.HasIndex("ProcessedAt", "LockedUntil", "ReceivedAt")
                         .HasDatabaseName("IX_InboxMessages_Processing");
+
+                    b.HasIndex("EventType", "ProcessedAt", "DeadLetteredAt", "ReceivedAt")
+                        .HasDatabaseName("IX_InboxMessages_EventType_Processing");
 
                     b.ToTable("InboxMessages");
                 });
@@ -324,8 +351,20 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DeadLetterRetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeadLetteredAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Error")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastAttemptedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LockedBy")
                         .HasMaxLength(200)
@@ -347,15 +386,16 @@ namespace Wallet.Infrastructure.Persistence.Migrations
                     b.Property<int>("RetryCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DeadLetteredAt", "LockedUntil", "LastAttemptedAt")
+                        .HasDatabaseName("IX_OutboxMessages_DeadLetter");
 
                     b.HasIndex("ProcessedAt", "LockedUntil", "CreatedAt")
                         .HasDatabaseName("IX_OutboxMessages_Processing");
+
+                    b.HasIndex("EventType", "ProcessedAt", "DeadLetteredAt", "CreatedAt")
+                        .HasDatabaseName("IX_OutboxMessages_EventType_Processing");
 
                     b.ToTable("OutboxMessages");
                 });
