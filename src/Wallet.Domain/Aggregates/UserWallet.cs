@@ -32,8 +32,6 @@ public class UserWallet : AggregateRoot
         UserId = userId;
     }
 
-    // ----------- DOMAIN METHODS --------------------
-
     private void ApplyBalanceChange(decimal amount)
     {
         AvailableBalance += amount;
@@ -169,8 +167,6 @@ public class UserWallet : AggregateRoot
         return tx;
     }
 
-    // ---------- PROMO -------------
-
     public PromoGrant AddPromoGrant(DomainWalletServiceType serviceType, decimal amount, DateTime expiresAt)
     {
         ValidatePositive(v: amount);
@@ -212,7 +208,6 @@ public class UserWallet : AggregateRoot
         return tx;
     }
 
-    // ---------- Helpers ------------
     private Reservation FindReservation(long id)
         => _reservations.FirstOrDefault(x => x.Id == id)
            ?? throw new InvalidOperationException("Reservation not found.");

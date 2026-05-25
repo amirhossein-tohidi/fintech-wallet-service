@@ -13,7 +13,6 @@ public class IdempotencyRequestConfiguration : BaseEntityConfiguration<Idempoten
             .IsRequired()
             .HasMaxLength(255);
         
-        // Unique Index
         builder.HasIndex(x => x.Key)
             .HasDatabaseName("UIX_IdempotencyRequests_Key")
             .IsUnique();

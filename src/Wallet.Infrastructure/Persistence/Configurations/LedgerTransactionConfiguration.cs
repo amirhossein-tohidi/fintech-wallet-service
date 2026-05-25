@@ -16,7 +16,6 @@ public class LedgerTransactionConfiguration : BaseEntityConfiguration<LedgerTran
         builder.Property(x => x.ServiceType)
             .IsRequired();
         
-        // Unique Index
         builder.HasIndex(x => x.IdempotencyKey)
             .HasDatabaseName("UIX_LedgerTransactions_IdempotencyKey")
             .IsUnique();
@@ -27,7 +26,6 @@ public class LedgerTransactionConfiguration : BaseEntityConfiguration<LedgerTran
         builder.Property(x => x.Amount)
             .HasPrecision(18, 0);
 
-        // Relation
         builder.HasMany(x => x.Entries)
             .WithOne()
             .HasForeignKey(x => x.TransactionId)

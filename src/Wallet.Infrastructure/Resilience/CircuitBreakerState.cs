@@ -8,9 +8,8 @@ public sealed class CircuitBreakerState(
     ILogger<CircuitBreakerState> logger)
 {
     private readonly CircuitBreakerOptions _options = options.Value;
-    private readonly object _syncRoot = new();
     private int _failureCount;
-    private DateTime? _openedAt;
+    private long _openedAtTicks;
 
     public async Task ExecuteAsync(
         string dependencyName,
@@ -33,57 +32,56 @@ public sealed class CircuitBreakerState(
 
     private void ThrowIfOpen(string dependencyName)
     {
-        lock (_syncRoot)
+        var openedAtTicks = Volatile.Read(ref _openedAtTicks);
+        if (openedAtTicks == 0)
         {
-            if (_openedAt == null)
-            {
-                return;
-            }
+            return;
+        }
 
-            var breakDuration = TimeSpan.FromSeconds(_options.BreakDurationSeconds);
-            if (DateTime.UtcNow - _openedAt >= breakDuration)
+        var breakDuration = TimeSpan.FromSeconds(_options.BreakDurationSeconds);
+        var openedAt = new DateTime(openedAtTicks, DateTimeKind.Utc);
+        if (DateTime.UtcNow - openedAt >= breakDuration)
+        {
+            if (Interlocked.CompareExchange(ref _openedAtTicks, value: 0, comparand: openedAtTicks) == openedAtTicks)
             {
+                Interlocked.Exchange(ref _failureCount, value: 0);
+
                 logger.LogInformation(
                     "Circuit breaker for {DependencyName} is half-open.",
                     dependencyName);
-
-                _openedAt = null;
-                _failureCount = 0;
-                return;
             }
 
-            throw new InvalidOperationException(
-                $"Circuit breaker is open for dependency '{dependencyName}'.");
+            return;
         }
+
+        throw new InvalidOperationException(
+            $"Circuit breaker is open for dependency '{dependencyName}'.");
     }
 
     private void RecordSuccess()
     {
-        lock (_syncRoot)
-        {
-            _failureCount = 0;
-            _openedAt = null;
-        }
+        Interlocked.Exchange(ref _failureCount, value: 0);
+        Interlocked.Exchange(ref _openedAtTicks, value: 0);
     }
 
     private void RecordFailure(string dependencyName, Exception exception)
     {
-        lock (_syncRoot)
+        var failureCount = Interlocked.Increment(ref _failureCount);
+        if (failureCount < _options.FailureThreshold)
         {
-            _failureCount++;
-
-            if (_failureCount < _options.FailureThreshold)
-            {
-                return;
-            }
-
-            _openedAt = DateTime.UtcNow;
-
-            logger.LogWarning(
-                exception,
-                "Circuit breaker opened for {DependencyName} after {FailureCount} consecutive failures.",
-                dependencyName,
-                _failureCount);
+            return;
         }
+
+        var openedAtTicks = DateTime.UtcNow.Ticks;
+        if (Interlocked.CompareExchange(ref _openedAtTicks, value: openedAtTicks, comparand: 0) != 0)
+        {
+            return;
+        }
+
+        logger.LogWarning(
+            exception,
+            "Circuit breaker opened for {DependencyName} after {FailureCount} consecutive failures.",
+            dependencyName,
+            failureCount);
     }
 }

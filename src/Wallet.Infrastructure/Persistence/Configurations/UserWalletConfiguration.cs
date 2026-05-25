@@ -19,7 +19,6 @@ public class UserWalletConfiguration: AggregateConfiguration<UserWallet>
         builder.Property(x => x.ReservedBalance)
             .HasPrecision(18, 0);
 
-        // Relations
         builder.HasMany(x => x.Reservations)
             .WithOne()
             .HasForeignKey("WalletId")

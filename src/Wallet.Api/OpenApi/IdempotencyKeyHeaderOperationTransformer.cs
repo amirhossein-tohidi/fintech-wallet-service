@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Text.Json.Nodes;
 using Wallet.Api.Constants;
 using Wallet.Api.Endpoints.Common;
 
