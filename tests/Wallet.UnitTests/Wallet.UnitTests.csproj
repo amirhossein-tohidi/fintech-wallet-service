@@ -27,6 +27,7 @@
       <ProjectReference Include="..\..\src\Wallet.Contracts\Wallet.Contracts.csproj" />
       <ProjectReference Include="..\..\src\Wallet.Domain\Wallet.Domain.csproj" />
       <ProjectReference Include="..\..\src\Wallet.Infrastructure\Wallet.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\src\Wallet.Worker\Wallet.Worker.csproj" />
     </ItemGroup>
 
 </Project>

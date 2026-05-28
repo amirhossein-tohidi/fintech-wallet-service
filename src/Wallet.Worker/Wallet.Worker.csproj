@@ -12,6 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="KafkaFlow" Version="4.2.0" />
+      <PackageReference Include="KafkaFlow.Extensions.Hosting" Version="4.2.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
     </ItemGroup>
 
