@@ -116,7 +116,7 @@ public sealed class IdempotencyAndConcurrencyTests(WalletIntegrationTestFixture 
         Assert.True(wallet.AvailableBalance >= 0);
 
         var paymentCount = await dbContext.LedgerTransactions
-            .CountAsync(x => x.WalletId == topUp.WalletId && x.ServiceType == Wallet.Domain.Enums.DomainWalletServiceType.Shop);
+            .CountAsync(x => x.WalletId == topUp.WalletId && x.ServiceType == Domain.Enums.DomainWalletServiceType.Shop);
         Assert.Equal(successfulPayments, paymentCount);
 
         foreach (var response in responses)

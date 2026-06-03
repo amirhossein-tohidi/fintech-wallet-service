@@ -18,7 +18,7 @@ public sealed class WorkerProcessingTests(WalletIntegrationTestFixture fixture)
     {
         var topUpResponse = await PostAsync(
             uri: $"/api/v1/wallet/users/{Guid.NewGuid()}/topups",
-            body: new Wallet.Contracts.Requests.TopUpWalletRequest(100),
+            body: new Contracts.Requests.TopUpWalletRequest(100),
             idempotencyKey: $"topup-{Guid.NewGuid():N}");
         await AssertStatusAsync(topUpResponse, System.Net.HttpStatusCode.OK);
 

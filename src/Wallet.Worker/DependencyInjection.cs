@@ -1,6 +1,4 @@
 using KafkaFlow;
-using KafkaFlow.Configuration;
-using KafkaFlow.Producers;
 using Wallet.Application.Abstractions.Messaging;
 using Wallet.Infrastructure.Messaging;
 using Wallet.Worker.BackgroundJobs;
