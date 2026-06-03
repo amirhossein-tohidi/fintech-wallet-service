@@ -191,6 +191,7 @@ flowchart LR
 | `Wallet.Worker` | Dedicated worker process for outbox, inbox, dead-letter retries, and reservation expiry. |
 | `tests/Wallet.UnitTests` | Unit tests for domain behavior, application handlers, mapping, validators, and infrastructure resilience. |
 | `tests/Wallet.PropertyTests` | FsCheck property tests for domain invariants such as ledger balancing, wallet balance conservation, and promo credit consumption. |
+| `tests/Wallet.ArchitectureTests` | NetArchTest rules that protect Clean Architecture dependency direction between domain, contracts, application, infrastructure, API, and worker projects. |
 | `tests/Wallet.IntegrationTests` | Testcontainers-backed integration tests for API, SQL Server persistence, Redis projections, idempotency, concurrency, and worker jobs. |
 | `tests/Wallet.AcceptanceTests` | Reqnroll/Gherkin acceptance scenarios for business-readable wallet behavior. |
 
@@ -374,6 +375,12 @@ Run property tests:
 dotnet test tests/Wallet.PropertyTests/Wallet.PropertyTests.csproj
 ```
 
+Run architecture tests:
+
+```bash
+dotnet test tests/Wallet.ArchitectureTests/Wallet.ArchitectureTests.csproj
+```
+
 Run integration tests:
 
 ```bash
@@ -450,6 +457,7 @@ Implemented:
 - Initial EF Core migration
 - Unit test coverage for domain, application, contracts, validation, mapping, queries, commands, and circuit breaker behavior
 - FsCheck property test coverage for ledger, wallet balance, reservation, and promo-credit invariants
+- Architecture test coverage for Clean Architecture project dependency rules
 - Integration test coverage for API flows, idempotency, concurrency, SQL Server persistence, Redis projections, outbox/inbox processing, and reservation expiry
 - Acceptance test coverage for Gherkin wallet money-movement scenarios
 
