@@ -433,6 +433,14 @@ Content-Type: application/json
 - Write paths must be transactionally safe.
 - Read paths should not mutate state.
 
+## AI Review Guidelines
+
+This repository includes project-level AI review guidelines to ensure that code changes are checked against the wallet system design, Clean Architecture, DDD, CQRS, double-entry ledger, idempotency, inbox/outbox, concurrency control, and production-readiness rules.
+
+These guidelines are used as review guardrails, not as automatic code generation instructions.
+
+See: [AI Review Guidelines](docs/ai-review-guidelines.md)
+
 ## Current Status
 
 Implemented:
