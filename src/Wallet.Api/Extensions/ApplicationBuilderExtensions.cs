@@ -1,5 +1,6 @@
 using Scalar.AspNetCore;
 using Wallet.Api.Endpoints;
+using Wallet.Api.Grpc.Wallet;
 using Wallet.Api.Middlewares;
 
 namespace Wallet.Api.Extensions;
@@ -18,6 +19,7 @@ public static class ApplicationBuilderExtensions
         app.UseMiddleware<IdempotencyMiddleware>();
 
         app.MapWalletEndpoints();
+        app.MapGrpcService<WalletGrpcService>();
 
         return app;
     }

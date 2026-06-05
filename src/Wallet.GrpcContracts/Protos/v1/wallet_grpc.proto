@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+import "Protos/v1/messages/add_promo_grant_grpc_request.proto";
+import "Protos/v1/messages/cancel_reservation_grpc_request.proto";
+import "Protos/v1/messages/confirm_reservation_grpc_request.proto";
+import "Protos/v1/messages/consume_promo_grpc_request.proto";
+import "Protos/v1/messages/fast_pay_grpc_request.proto";
+import "Protos/v1/messages/get_promo_balances_grpc_request.proto";
+import "Protos/v1/messages/get_promo_balances_grpc_response.proto";
+import "Protos/v1/messages/get_transactions_grpc_request.proto";
+import "Protos/v1/messages/get_transactions_grpc_response.proto";
+import "Protos/v1/messages/get_wallet_balance_grpc_request.proto";
+import "Protos/v1/messages/promo_grant_operation_grpc_response.proto";
+import "Protos/v1/messages/refund_grpc_request.proto";
+import "Protos/v1/messages/reservation_operation_grpc_response.proto";
+import "Protos/v1/messages/reserve_grpc_request.proto";
+import "Protos/v1/messages/top_up_wallet_grpc_request.proto";
+import "Protos/v1/messages/wallet_balance_grpc_response.proto";
+import "Protos/v1/messages/wallet_transaction_result_grpc_response.proto";
+
+service WalletGrpc {
+  rpc TopUp (TopUpWalletGrpcRequest) returns (WalletTransactionResultGrpcResponse);
+  rpc FastPay (FastPayGrpcRequest) returns (WalletTransactionResultGrpcResponse);
+  rpc Refund (RefundGrpcRequest) returns (WalletTransactionResultGrpcResponse);
+  rpc Reserve (ReserveGrpcRequest) returns (ReservationOperationGrpcResponse);
+  rpc ConfirmReservation (ConfirmReservationGrpcRequest) returns (ReservationOperationGrpcResponse);
+  rpc CancelReservation (CancelReservationGrpcRequest) returns (ReservationOperationGrpcResponse);
+  rpc AddPromoGrant (AddPromoGrantGrpcRequest) returns (PromoGrantOperationGrpcResponse);
+  rpc ConsumePromo (ConsumePromoGrpcRequest) returns (WalletTransactionResultGrpcResponse);
+  rpc GetWalletBalance (GetWalletBalanceGrpcRequest) returns (WalletBalanceGrpcResponse);
+  rpc GetTransactions (GetTransactionsGrpcRequest) returns (GetTransactionsGrpcResponse);
+  rpc GetPromoBalances (GetPromoBalancesGrpcRequest) returns (GetPromoBalancesGrpcResponse);
+}

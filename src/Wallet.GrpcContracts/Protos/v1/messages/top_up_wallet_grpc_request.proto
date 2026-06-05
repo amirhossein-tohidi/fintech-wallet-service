@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+message TopUpWalletGrpcRequest {
+  string user_id = 1;
+  string amount = 2;
+}

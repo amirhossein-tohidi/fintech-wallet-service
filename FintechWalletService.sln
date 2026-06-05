@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.PropertyTests", "tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.ArchitectureTests", "tests\Wallet.ArchitectureTests\Wallet.ArchitectureTests.csproj", "{B98909E8-8AB1-4117-8FE7-EA18D61AA3B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.GrpcContracts", "src\Wallet.GrpcContracts\Wallet.GrpcContracts.csproj", "{38ED23B7-2C07-4FD6-99B4-E03A4A11AEB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{B98909E8-8AB1-4117-8FE7-EA18D61AA3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B98909E8-8AB1-4117-8FE7-EA18D61AA3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B98909E8-8AB1-4117-8FE7-EA18D61AA3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38ED23B7-2C07-4FD6-99B4-E03A4A11AEB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38ED23B7-2C07-4FD6-99B4-E03A4A11AEB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38ED23B7-2C07-4FD6-99B4-E03A4A11AEB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38ED23B7-2C07-4FD6-99B4-E03A4A11AEB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,5 +98,6 @@ Global
 		{4029ED63-B41E-4DE7-B6D8-EA28F4FA9201} = {A393636F-5F7F-4A4C-998E-836A2D928700}
 		{7F645712-C608-4DFD-80CA-0E919245E456} = {A393636F-5F7F-4A4C-998E-836A2D928700}
 		{B98909E8-8AB1-4117-8FE7-EA18D61AA3B7} = {A393636F-5F7F-4A4C-998E-836A2D928700}
+		{38ED23B7-2C07-4FD6-99B4-E03A4A11AEB6} = {B6D4E0A2-59AF-4347-ABC2-B88C99DD46CE}
 	EndGlobalSection
 EndGlobal

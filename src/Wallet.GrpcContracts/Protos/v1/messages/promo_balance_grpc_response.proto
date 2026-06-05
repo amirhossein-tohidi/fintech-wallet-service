@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+import "google/protobuf/timestamp.proto";
+import "Protos/v1/wallet_enums.proto";
+
+message PromoBalanceGrpcResponse {
+  int64 promo_grant_id = 1;
+  WalletServiceType service_type = 2;
+  string original_amount = 3;
+  string remaining_amount = 4;
+  string consumed_amount = 5;
+  bool is_expired = 6;
+  google.protobuf.Timestamp expires_at = 7;
+}

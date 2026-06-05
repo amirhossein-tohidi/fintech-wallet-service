@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+message GetWalletBalanceGrpcRequest {
+  int64 wallet_id = 1;
+}

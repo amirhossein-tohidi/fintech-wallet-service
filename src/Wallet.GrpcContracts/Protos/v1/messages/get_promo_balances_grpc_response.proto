@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+import "Protos/v1/messages/promo_balance_grpc_response.proto";
+
+message GetPromoBalancesGrpcResponse {
+  repeated PromoBalanceGrpcResponse balances = 1;
+}

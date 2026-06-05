@@ -16,4 +16,7 @@ app.ConfigureRequestPipeline();
 
 app.Run();
 
-public partial class Program;
+namespace Wallet.Api
+{
+    public partial class Program;
+}

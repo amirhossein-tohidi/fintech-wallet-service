@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+message ConfirmReservationGrpcRequest {
+  int64 wallet_id = 1;
+  int64 reservation_id = 2;
+}

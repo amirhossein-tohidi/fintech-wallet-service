@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wallet.GrpcContracts";
+
+package wallet.v1;
+
+import "Protos/v1/wallet_enums.proto";
+
+message ReserveGrpcRequest {
+  int64 wallet_id = 1;
+  WalletServiceType service_type = 2;
+  string amount = 3;
+}
