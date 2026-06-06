@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 using Wallet.Domain.Aggregates;
 using Wallet.Domain.Enums;
 using Wallet.Infrastructure.Persistence.Messaging;

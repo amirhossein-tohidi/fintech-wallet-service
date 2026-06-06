@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Wallet.Application.Mapping;
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 using Wallet.Domain.Events.Abstractions;
 using Wallet.Domain.Events.Ledger;
 using Wallet.Domain.Events.Promotion;

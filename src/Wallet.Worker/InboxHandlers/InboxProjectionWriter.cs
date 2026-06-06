@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 using Wallet.Infrastructure.Redis;
 
 namespace Wallet.Worker.InboxHandlers;

@@ -3,7 +3,7 @@ using System.Text.Json;
 using KafkaFlow;
 using Microsoft.EntityFrameworkCore;
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 using Wallet.Infrastructure.Persistence;
 using Wallet.Infrastructure.Persistence.Messaging;
 

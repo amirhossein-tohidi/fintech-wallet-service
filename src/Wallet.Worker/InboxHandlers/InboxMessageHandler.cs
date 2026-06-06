@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Wallet.Application.Abstractions.Messaging;
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 
 namespace Wallet.Worker.InboxHandlers;
 

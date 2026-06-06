@@ -1,4 +1,4 @@
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 using Wallet.Contracts.Enums;
 
 namespace Wallet.Worker.InboxHandlers;
