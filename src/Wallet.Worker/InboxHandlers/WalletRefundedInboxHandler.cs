@@ -1,5 +1,5 @@
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 
 namespace Wallet.Worker.InboxHandlers;
 

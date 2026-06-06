@@ -1,6 +1,6 @@
 using Wallet.Contracts.Enums;
 
-namespace Wallet.Contracts.Events;
+namespace Wallet.Contracts.IntegrationEvents;
 
 public sealed record PromoGrantAddedEvent(
     Guid UserId,

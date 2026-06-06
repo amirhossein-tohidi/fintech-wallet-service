@@ -1,5 +1,5 @@
 using Wallet.Contracts.Enums;
-using Wallet.Contracts.Events;
+using Wallet.Contracts.IntegrationEvents;
 using Wallet.Contracts.Responses;
 using Wallet.Domain.Exceptions;
 
